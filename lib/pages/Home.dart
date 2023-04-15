@@ -127,9 +127,12 @@ class _HomeState extends State<Home> {
                   ),
                   Column(
                     children: [
+                      const SizedBox(
+                        height: 30,
+                      ),
                       ElevatedButton(
                           onPressed: getLocationInfo,
-                          child: Text("Get Location"))
+                          child: const Text("Get Location"))
                     ],
                   )
                 ],
