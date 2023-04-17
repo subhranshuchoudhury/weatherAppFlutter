@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forecaster/pages/Home.dart';
+import 'package:forecaster/pages/Weather.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -15,8 +16,8 @@ class _SplashState extends State<Splash> {
   void initState() {
     Timer(
         const Duration(seconds: 2),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const Home())));
+        () => Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const WeatherPage())));
     super.initState();
   }
 
