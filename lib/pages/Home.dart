@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:forecaster/model/weather_model.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:weather_icons/weather_icons.dart';
+import 'package:line_icons/line_icons.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,6 +18,7 @@ class _HomeState extends State<Home> {
 
   late Weather weather;
   bool loading = true;
+  bool forecastLoading = true;
   bool locationLoading = false;
   String weatherIcons = "assets/images/location-off.png";
   var weatherAccentColor = const Color.fromARGB(255, 238, 65, 52);
@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
   getWeatherInfo({double long = 86.42, double lat = 20.49}) async {
     try {
       var response = await http.get(Uri.parse(
-          "https://api.openweathermap.org/data/2.5/weather?lat=${lat.toString()}&lon=${long.toString()}&appid=30bc1dae9d219aaa107f75ba1682a80c"));
+          "https://api.openweathermap.org/data/2.5/weather?lat=${lat.toString()}&lon=${long.toString()}&appid=ac244764e38460bdd143f804ed1840f8"));
       var decodedJson = await jsonDecode(response.body);
 
       weather = Weather(
@@ -42,6 +42,8 @@ class _HomeState extends State<Home> {
           icon: decodedJson["weather"][0]["icon"],
           name: decodedJson["name"],
           id: decodedJson["weather"][0]["id"],
+          humidity: decodedJson["main"]["humidity"].toString(),
+          pressure: decodedJson["main"]["pressure"].toString(),
           temp_max: decodedJson["main"]["temp_max"],
           temp_min: decodedJson["main"]["temp_min"],
           temp: decodedJson["main"]["temp"]);
@@ -65,7 +67,24 @@ class _HomeState extends State<Home> {
     }
   }
 
-  getForecastInfo() async {}
+  getForecastInfo({double long = 86.42, double lat = 20.49}) async {
+    // http://api.openweathermap.org/data/2.5/forecast?lat=40.3&lon=45.3&appid=ac244764e38460bdd143f804ed1840f8
+
+    var response = await http.get(Uri.parse(
+        "http://api.openweathermap.org/data/2.5/forecast?lat=${lat.toString()}&lon=${long.toString()}&appid=ac244764e38460bdd143f804ed1840f8"));
+
+    var decodedJson = await jsonDecode(response.body);
+
+    setState(() {
+      forecastLoading = false;
+    });
+
+    // print("Forecast " + decodedJson.toString());
+
+    try {} catch (e) {
+      print(e.toString());
+    }
+  }
 
   getLocationInfo() async {
     locationLoading = true;
@@ -77,6 +96,7 @@ class _HomeState extends State<Home> {
         desiredAccuracy: LocationAccuracy.low);
 
     getWeatherInfo(long: position.longitude, lat: position.latitude);
+    getForecastInfo(long: position.longitude, lat: position.latitude);
   }
 
   setWeatherCode(int code) {
@@ -120,30 +140,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: GNav(
-          onTabChange: (index) {
-            if (index == 0) {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const Home()));
-            } else if (index == 1) {
-              print("first");
-            } else if (index == 2) {
-              print("first");
-            }
-          },
-          tabs: const [
-            GButton(
-              icon: Icons.home,
-            ),
-            GButton(icon: Icons.search),
-            GButton(icon: Icons.location_pin)
-          ]),
-      // appBar: AppBar(
-      //   backgroundColor: weatherAccentColor,
-      //   title: Center(
-      //     child: Text("${weather.name}, ${weather.country}"),
-      //   ),
-      // ),
       body: loading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -174,6 +170,15 @@ class _HomeState extends State<Home> {
                 ),
                 const SizedBox(height: 20),
                 Text(
+                  weather.name,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 39, 55, 96),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
                   weather.main,
                   style: const TextStyle(
                     color: Color.fromARGB(255, 39, 55, 96),
@@ -195,7 +200,7 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(
-                      Icons.thermostat,
+                      LineIcons.thermometerFull,
                       size: 30,
                       color: Colors.red,
                     ),
@@ -209,7 +214,7 @@ class _HomeState extends State<Home> {
                     ),
                     const SizedBox(width: 20),
                     const Icon(
-                      Icons.thermostat,
+                      LineIcons.thermometerEmpty,
                       size: 30,
                       color: Color.fromARGB(255, 51, 109, 255),
                     ),
@@ -223,6 +228,41 @@ class _HomeState extends State<Home> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.scale,
+                      size: 30,
+                      color: Color.fromARGB(255, 51, 109, 255),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${weather.pressure} P',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 2, 22, 201)),
+                    ),
+                    const SizedBox(width: 20),
+                    const Icon(
+                      Icons.water_drop_rounded,
+                      size: 30,
+                      color: Color.fromARGB(255, 51, 109, 255),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${weather.humidity} H',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 2, 22, 201)),
+                    ),
+                  ],
+                )
               ],
             ),
       floatingActionButton: Align(

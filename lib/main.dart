@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:forecaster/pages/Home.dart';
 import 'package:forecaster/splash/Splash.dart';
 
 void main() {
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: "Forecaster",
+      // no splash screen as i assigned home route
       home: Splash(),
       debugShowCheckedModeBanner: false,
     );

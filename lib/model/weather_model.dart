@@ -7,8 +7,8 @@ class Weather {
   late double feels_like;
   late double temp_min;
   late double temp_max;
-  late double pressure;
-  late double humidity;
+  late String pressure;
+  late String humidity;
   late double sea_level;
   late double grnd_level;
   late double visibility;
@@ -28,6 +28,8 @@ class Weather {
       required this.icon,
       required this.name,
       required this.temp,
+      required this.humidity,
+      required this.pressure,
       required this.temp_min,
       required this.temp_max,
       required this.id});
