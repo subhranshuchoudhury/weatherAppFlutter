@@ -15,7 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   // declaring the variables.
-
+  List<Weather> forecastData = [];
   late Weather weather;
   bool loading = true;
   bool forecastLoading = true;
@@ -23,10 +23,21 @@ class _HomeState extends State<Home> {
   String weatherIcons = "assets/images/location-off.png";
   var weatherAccentColor = const Color.fromARGB(255, 238, 65, 52);
 
+  // forecast information
+
+  late String date;
+
   @override
   void initState() {
     getLocationInfo();
     super.initState();
+  }
+
+  String dateStringFT(int timestamp) {
+    DateTime dateStamp = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    String dateTime =
+        "${dateStamp.year}/${dateStamp.month}/${dateStamp.day} ${dateStamp.hour > 12 ? dateStamp.hour - 12 : dateStamp.hour}:${dateStamp.minute} ${dateStamp.hour > 12 ? 'PM' : 'AM'}";
+    return dateTime;
   }
 
   getWeatherInfo({double long = 86.42, double lat = 20.49}) async {
@@ -41,6 +52,7 @@ class _HomeState extends State<Home> {
           country: decodedJson["sys"]["country"],
           icon: decodedJson["weather"][0]["icon"],
           name: decodedJson["name"],
+          dt: 0,
           id: decodedJson["weather"][0]["id"],
           humidity: decodedJson["main"]["humidity"].toString(),
           pressure: decodedJson["main"]["pressure"].toString(),
@@ -74,7 +86,26 @@ class _HomeState extends State<Home> {
         "http://api.openweathermap.org/data/2.5/forecast?lat=${lat.toString()}&lon=${long.toString()}&appid=ac244764e38460bdd143f804ed1840f8"));
 
     var decodedJson = await jsonDecode(response.body);
-
+    print(decodedJson["list"].length);
+    int len = decodedJson["list"].length;
+    for (int i = 0; i < len; i++) {
+      forecastData.add(
+        Weather(
+          main: decodedJson["list"][i]["weather"][0]["main"],
+          description: decodedJson["list"][i]["weather"][0]["description"],
+          icon: decodedJson["list"][i]["weather"][0]["icon"],
+          country: "N/A",
+          name: "N/A",
+          id: decodedJson["list"][i]["weather"][0]["id"],
+          humidity: decodedJson["list"][i]["main"]["humidity"].toString(),
+          pressure: decodedJson["list"][i]["main"]["pressure"].toString(),
+          temp_max: decodedJson["list"][i]["main"]["temp_max"],
+          dt: decodedJson["list"][i]["dt"],
+          temp_min: decodedJson["list"][i]["main"]["temp_min"],
+          temp: decodedJson["list"][i]["main"]["temp"],
+        ),
+      );
+    }
     setState(() {
       forecastLoading = false;
     });
@@ -262,6 +293,127 @@ class _HomeState extends State<Home> {
                           color: Color.fromARGB(255, 2, 22, 201)),
                     ),
                   ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 30),
+                  child: forecastLoading
+                      ? const CircularProgressIndicator()
+                      : Container(
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.only(
+                            bottom: 5,
+                            top: 10,
+                            left: 10,
+                            right: 10,
+                          ),
+                          decoration: const BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    dateStringFT(forecastData[0].dt),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 100,
+                                  ),
+                                  Text(
+                                    forecastData[0].main,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Description: ",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 100,
+                                  ),
+                                  Text(
+                                    forecastData[0].description,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: const [
+                                  SizedBox(
+                                    height: 30,
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    dateStringFT(forecastData[1].dt),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 100,
+                                  ),
+                                  Text(
+                                    forecastData[1].main,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Description: ",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 100,
+                                  ),
+                                  Text(
+                                    forecastData[1].description,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                 )
               ],
             ),

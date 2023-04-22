@@ -37,6 +37,7 @@ class _SearchPageState extends State<SearchPage> {
           country: decodedJson["sys"]["country"],
           icon: decodedJson["weather"][0]["icon"],
           name: decodedJson["name"],
+          dt: 0,
           id: decodedJson["weather"][0]["id"],
           humidity: decodedJson["main"]["humidity"].toString(),
           pressure: decodedJson["main"]["pressure"].toString(),
@@ -290,6 +291,10 @@ class CustomSearch extends SearchDelegate {
       if (item.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(item);
       }
+    }
+
+    if (matchQuery.isEmpty) {
+      matchQuery.add(query);
     }
 
     return ListView.builder(

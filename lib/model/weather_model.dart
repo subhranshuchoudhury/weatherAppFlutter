@@ -32,5 +32,6 @@ class Weather {
       required this.pressure,
       required this.temp_min,
       required this.temp_max,
+      required this.dt,
       required this.id});
 }
