@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forecaster/pages/Home.dart';
 import 'package:forecaster/pages/News.dart';
+import 'package:forecaster/pages/SearchCity.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -18,10 +19,7 @@ class _HomePageState extends State<HomePage> {
   static const List<Widget> _widgetOptions = <Widget>[
     Home(),
     News(),
-    Text(
-      'Search',
-      style: optionStyle,
-    ),
+    SearchPage(),
     Text(
       'Forecast',
       style: optionStyle,
