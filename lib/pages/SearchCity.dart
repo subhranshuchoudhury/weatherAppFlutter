@@ -61,11 +61,6 @@ class _SearchPageState extends State<SearchPage> {
       Fluttertoast.cancel();
     }
   }
-  // Test function
-
-  test(String msg) {
-    print("Test Success..... $msg");
-  }
 
   // color change according to API data
 

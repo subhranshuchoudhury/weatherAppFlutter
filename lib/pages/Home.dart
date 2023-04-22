@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
         "http://api.openweathermap.org/data/2.5/forecast?lat=${lat.toString()}&lon=${long.toString()}&appid=ac244764e38460bdd143f804ed1840f8"));
 
     var decodedJson = await jsonDecode(response.body);
-    print(decodedJson["list"].length);
+    // print(decodedJson["list"].length);
     int len = decodedJson["list"].length;
     for (int i = 0; i < len; i++) {
       forecastData.add(

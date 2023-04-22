@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forecaster/pages/Forecast.dart';
 import 'package:forecaster/pages/Home.dart';
 import 'package:forecaster/pages/News.dart';
 import 'package:forecaster/pages/SearchCity.dart';
@@ -20,10 +21,7 @@ class _HomePageState extends State<HomePage> {
     Home(),
     News(),
     SearchPage(),
-    Text(
-      'Forecast',
-      style: optionStyle,
-    ),
+    ForecastPage(),
   ];
   @override
   Widget build(BuildContext context) {
